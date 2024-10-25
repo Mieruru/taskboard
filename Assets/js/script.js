@@ -22,14 +22,6 @@ function readTasksFromStorage() {
     taskList = [];
   }
 
-  // Todo: create a function to generate a unique task id
-  function generateTaskId() {
-    let currentId = nextId
-    nextId += 1
-    localStorage.setItem("nextId", nextId)
-    localStorage.clear()
-    return currentId
-  }
   // ? Return the tasks array either empty or with data in it whichever it was determined to be by the logic right above.
   return taskList;
 
@@ -130,11 +122,12 @@ function handleAddTask(event) {
 
   // ? Read user input from the form
   const taskName = taskNameInputEl.val().trim();
-  const taskType = taskTypeInputEl.val(); // don't need to trim select input
+  const taskType = taskTypeInputEl.val().trim();
   const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
 
   const newTask = {
     // ? Here we use a Web API called `crypto` to generate a random id for our task. This is a unique identifier that we can use to find the task in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
     name: taskName,
     type: taskType,
     dueDate: taskDate,
