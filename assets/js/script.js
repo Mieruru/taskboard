@@ -10,24 +10,22 @@ let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
 
-// ? Reads tasks from local storage and returns array of task objects.
-// ? If there are no tasks in localStorage, it initializes an empty array ([]) and returns it.
+// Reads tasks from local storage and returns array of task objects.
+// If there are no tasks in localStorage, it initializes an empty array ([]) and returns it.
 // IMPLEMENTED
 function readTasksFromStorage() {
-  // ? Retrieve tasks from localStorage and parse the JSON to an array.
-  // ? We use `let` here because there is a chance that there are no tasks in localStorage (which means the tasks variable will be equal to `null`) and we will need it to be initialized to an empty array.
 
-  // ? If no tasks were retrieved from localStorage, assign tasks to a new empty array to push to later.
+  // If no tasks were retrieved from localStorage, assign tasks to a new empty array to push to later.
   if (!taskList) {
     taskList = [];
   }
 
-  // ? Return the tasks array either empty or with data in it whichever it was determined to be by the logic right above.
+  // Return the tasks array either empty or with data in it whichever it was determined to be by the logic right above.
   return taskList;
 
 }
 
-// ? Accepts an array of tasks, stringifys them, and saves them in localStorage.
+// Accepts an array of tasks, stringifys them, and saves them in localStorage.
 function saveTasksToStorage(tasks) {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -48,12 +46,12 @@ function createTaskCard(task) {
     .attr('data-task-id', task.id);
   cardDeleteBtn.on('click', handleDeleteTask);
 
-  // ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
+  // Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
   if (task.dueDate && task.status !== 'done') {
     const now = dayjs();
     const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
-    // ? If the task is due today, make the card yellow. If it is overdue, make it red.
+    // If the task is due today, make the card yellow. If it is overdue, make it red.
     if (now.isSame(taskDueDate, 'day')) {
       taskCard.addClass('bg-warning text-white');
     } else if (now.isAfter(taskDueDate)) {
@@ -62,11 +60,11 @@ function createTaskCard(task) {
     }
   }
 
-  // ? Gather all the elements created above and append them to the correct elements.
+  // Gather all the elements created above and append them to the correct elements.
   cardBody.append(cardDescription, cardDueDate, cardDeleteBtn);
   taskCard.append(cardHeader, cardBody);
 
-  // ? Return the card so it can be appended to the correct lane.
+  // Return the card so it can be appended to the correct lane.
   return taskCard;
 
 }
@@ -76,7 +74,7 @@ function createTaskCard(task) {
 function renderTaskList() {
   const tasks = readTasksFromStorage();
 
-  // ? Empty existing task cards out of the lanes
+  // Empty existing task cards out of the lanes
   const todoList = $('#todo-cards');
   todoList.empty();
 
@@ -86,7 +84,7 @@ function renderTaskList() {
   const doneList = $('#done-cards');
   doneList.empty();
 
-  // ? Loop through tasks and create task cards for each status
+  // Loop through tasks and create task cards for each status
   for (let task of tasks) {
     if (task.status === 'to-do') {
       todoList.append(createTaskCard(task));
@@ -97,17 +95,17 @@ function renderTaskList() {
     }
   }
 
-  // ? Use JQuery UI to make task cards draggable
+  // Use JQuery UI to make task cards draggable
   $('.draggable').draggable({
     opacity: 0.7,
     zIndex: 100,
-    // ? This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
+    // This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
     helper: function (e) {
-      // ? Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
+      // Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
       const original = $(e.target).hasClass('ui-draggable')
         ? $(e.target)
         : $(e.target).closest('.ui-draggable');
-      // ? Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
+      // Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
       return original.clone().css({
         width: original.outerWidth(),
       });
@@ -120,13 +118,13 @@ function renderTaskList() {
 function handleAddTask(event) {
   event.preventDefault();
 
-  // ? Read user input from the form
+  // Read user input from the form
   const taskName = taskNameInputEl.val().trim();
   const taskType = taskTypeInputEl.val().trim();
   const taskDate = taskDateInputEl.val(); // yyyy-mm-dd format
 
   const newTask = {
-    // ? Here we use a Web API called `crypto` to generate a random id for our task. This is a unique identifier that we can use to find the task in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.    id: crypto.randomUUID(),
+    // Here we use a Web API called `crypto` to generate a random id for our task. This is a unique identifier that we can use to find the task in the array. `crypto` is a built-in module that we can use in the browser and Nodejs.
     id: crypto.randomUUID(),
     name: taskName,
     type: taskType,
@@ -134,17 +132,17 @@ function handleAddTask(event) {
     status: 'to-do',
   };
 
-  // ? Pull the tasks from localStorage and push the new task to the array
+  // Pull the tasks from localStorage and push the new task to the array
   const tasks = readTasksFromStorage();
   tasks.push(newTask);
 
-  // ? Save the updated tasks array to localStorage
+  // Save the updated tasks array to localStorage
   saveTasksToStorage(tasks);
 
-  // ? Print task data back to the screen
+  // Print task data back to the screen
   renderTaskList();
 
-  // ? Clear the form inputs
+  // Clear the form inputs
   taskNameInputEl.val('');
   taskTypeInputEl.val('');
   taskDateInputEl.val('');
@@ -159,39 +157,39 @@ function handleDeleteTask(event) {
   const taskId = $(this).attr('data-task-id');
   const tasks = readTasksFromStorage();
 
-  // ? Remove task from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the task.
+  // Remove task from the array.
   tasks.forEach((task) => {
     if (task.id === taskId) {
       tasks.splice(tasks.indexOf(task), 1);
     }
   });
 
-  // ? We will use our helper function to save the tasks to localStorage
+  // Usehelper function to save the tasks to localStorage
   saveTasksToStorage(tasks);
 
-  // ? Here we use our other function to print tasks back to the screen
+  // Here we use our other function to print tasks back to the screen
   renderTaskList();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
 // IMPLEMENTED
 function handleDrop(event, ui) {
-  // ? Read tasks from localStorage
+  // Read tasks from localStorage
   const tasks = readTasksFromStorage();
 
-  // ? Get the task id from the event
+  // Get the task id from the event
   const taskId = ui.draggable[0].dataset.taskId;
 
-  // ? Get the id of the lane that the card was dropped into
+  // Get the id of the lane that the card was dropped into
   const newStatus = event.target.id;
 
   for (let task of tasks) {
-    // ? Find the task card by the `id` and update the task status.
+    // Find the task card by the `id` and update the task status.
     if (task.id === taskId) {
       task.status = newStatus;
     }
   }
-  // ? Save the updated tasks array to localStorage (overwritting the previous one) and render the new task data to the screen.
+  // Save the updated tasks array to localStorage (overwritting the previous one) and render the new task data to the screen.
   localStorage.setItem('tasks', JSON.stringify(tasks));
   renderTaskList();
 }
@@ -205,7 +203,7 @@ taskDisplayEl.on('click', '.btn-delete-task', handleDeleteTask)
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 // IMPLEMENTED
 $(document).ready(function () {
-  // ? Print task data to the screen on page load if there is any
+  // Print task data to the screen on page load if there is any
   renderTaskList();
 
   $('#taskDueDate').datepicker({
@@ -213,7 +211,7 @@ $(document).ready(function () {
     changeYear: true,
   });
 
-  // ? Make lanes droppable
+  // Make lanes droppable
   $('.lane').droppable({
     accept: '.draggable',
     drop: handleDrop,
