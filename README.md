@@ -8,9 +8,9 @@ A basic kanban-style taskboard with drag-and drop functionality. Supports handli
 
 ## Sample Images
 
-![alt text](./Assets/images/sample%201.png 'Sample Image 1')
-![alt text](./Assets/images/sample%202.png 'Sample Image 2')
-![alt text](./Assets/images/sample%203.png 'Sample Image 3')
+![alt text](./assets/images/sample%201.png 'Sample Image 1')
+![alt text](./assets/images/sample%202.png 'Sample Image 2')
+![alt text](./assets/images/sample%203.png 'Sample Image 3')
 
 ## Table of Contents
 
