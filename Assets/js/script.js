@@ -148,6 +148,9 @@ function handleAddTask(event) {
   taskNameInputEl.val('');
   taskTypeInputEl.val('');
   taskDateInputEl.val('');
+
+  // hide form
+  taskFormEl.modal('hide');
 }
 
 // Todo: create a function to handle deleting a task
